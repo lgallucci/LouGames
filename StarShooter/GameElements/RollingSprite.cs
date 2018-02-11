@@ -22,26 +22,24 @@ namespace StarShooter
             texturesize = new Vector2(0, Texture.Height);
         }
         
-        // ScrollingBackground.Update
         public override void Update(float elapsedTime)
         {
             screenpos.Y += elapsedTime;
             screenpos.Y = screenpos.Y % Texture.Height;
         }
 
-        // ScrollingBackground.Draw
-        public override void Draw(SpriteBatch batch, Rectangle? sourceRectangle = null)
+        public override void Draw(SpriteBatch batch, Color? color = null, Rectangle? sourceRectangle = null)
         {
             // Draw the texture, if it is still onscreen.
             if (screenpos.Y < screenheight)
             {
                 batch.Draw(Texture, screenpos, null,
-                     Color.White, 0, origin, 1, SpriteEffects.None, 0f);
+                     color ?? Color.White, 0, origin, 1, SpriteEffects.None, 0f);
             }
             // Draw the texture a second time, behind the first,
             // to create the scrolling illusion.
             batch.Draw(Texture, screenpos - texturesize, null,
-                 Color.White, 0, origin, 1, SpriteEffects.None, 0f);
+                 color ?? Color.White, 0, origin, 1, SpriteEffects.None, 0f);
         }
     }
 }

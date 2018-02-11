@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -14,6 +15,8 @@ namespace StarShooter
     public class Ship : SpriteClass
     {
         Collection<Projectile> _projectiles;
+        private bool blinking;
+        private DateTime blinkingStart = DateTime.MinValue;
 
         public Ship(GraphicsDevice graphicsDevice, Texture2D texture, float scale)
             : base(graphicsDevice, texture, scale)
@@ -23,7 +26,7 @@ namespace StarShooter
             Width = 100;
         }
 
-        public void Draw(SpriteBatch spriteBatch, ShipDirection direction)
+        public void Draw(SpriteBatch spriteBatch, float alpha, ShipDirection direction)
         {
             Rectangle sourceRectangle;
             if (direction == ShipDirection.Left)
@@ -38,7 +41,7 @@ namespace StarShooter
             {
                 sourceRectangle = new Rectangle(200, 0, 100, 125);
             }
-            this.Draw(spriteBatch, sourceRectangle);
+            this.Draw(spriteBatch, blinking ? Color.White * (alpha / 255) : Color.White, sourceRectangle);
         }
 
         public void Update(float elapsedTime, float screenWidth, float screenHeight, float topBoundary)
@@ -50,7 +53,7 @@ namespace StarShooter
                 this.X = screenWidth - this.Width / 2;
                 this.DX = 0;
             }
-        
+
             // Set left edge
             if (this.X < 0 + this.Width / 2)
             {
@@ -69,12 +72,25 @@ namespace StarShooter
                 this.Y = screenHeight - this.Height / 2;
                 this.DY = 0;
             }
+            if (blinkingStart > DateTime.MinValue && (DateTime.Now - blinkingStart).TotalSeconds > 5)
+            {
+                blinking = false;
+                blinkingStart = DateTime.MinValue;
+            }
         }
 
         public void CheckCollisions(Collection<Projectile> projectiles)
         {
+            if (blinking) return;
+
             foreach (var projectile in projectiles)
-                this.RectangleCollision(projectile);
+                if (this.RectangleCollision(projectile))
+                {
+                    Health -= projectile.Strength;
+                    projectile.Strength = 0;
+                    blinking = true;
+                    blinkingStart = DateTime.Now;
+                }
         }
 
         public float Health

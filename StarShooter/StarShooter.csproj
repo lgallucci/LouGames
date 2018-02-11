@@ -131,6 +131,7 @@
     <Content Include="Assets\StoreLogo.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
     <Content Include="Content\game-over.png" />
+    <Content Include="Content\lazer.png" />
     <Content Include="Content\ship.png" />
     <Content Include="Content\starsBack.png" />
     <Content Include="Content\starsFront.png" />

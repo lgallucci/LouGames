@@ -7,6 +7,13 @@ namespace StarShooter
         public Projectile(GraphicsDevice graphicsDevice, Texture2D texture, float scale) 
             : base(graphicsDevice, texture, scale)
         {
+            Strength = 34;
+        }
+        
+        public float Strength
+        {
+            get;
+            set;
         }
     }
 }

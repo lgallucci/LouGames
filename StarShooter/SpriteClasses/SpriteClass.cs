@@ -24,10 +24,10 @@ namespace StarShooter
             this.Angle += this.DA * elapsedTime;
         }
 
-        public virtual void Draw(SpriteBatch spriteBatch, Rectangle? sourceRectangle = null)
+        public virtual void Draw(SpriteBatch spriteBatch, Color? color = null, Rectangle? sourceRectangle = null)
         {
             Vector2 spritePosition = new Vector2(this.X, this.Y);
-            spriteBatch.Draw(Texture, spritePosition, sourceRectangle, Color.White, this.Angle, new Vector2(Width / 2, Height / 2), new Vector2(Scale, Scale), SpriteEffects.None, 0f);
+            spriteBatch.Draw(Texture, spritePosition, sourceRectangle, color ?? Color.White, this.Angle, new Vector2(Width / 2, Height / 2), new Vector2(Scale, Scale), SpriteEffects.None, 0f);
         }
 
         public bool RectangleCollision(SpriteClass otherSprite)
@@ -67,7 +67,7 @@ namespace StarShooter
             set { _width = value; }
         }
 
-        const float HITBOXSCALE = .5f;
+        const float HITBOXSCALE = .9f;
 
         public Texture2D Texture
         {

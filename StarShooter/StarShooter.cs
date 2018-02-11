@@ -33,6 +33,7 @@ namespace StarShooter
         float projectileSpeed;
         float shipSpeedX;
         float shipSpeedY;
+        float starSpeed;
         int score;
 
         Random random;
@@ -65,7 +66,8 @@ namespace StarShooter
             random = new Random();
             shipSpeedX = ScaleToHighDPI(600f);
             shipSpeedY = ScaleToHighDPI(600f);
-            projectileSpeed = ScaleToHighDPI(30f);
+            projectileSpeed = ScaleToHighDPI(150f);
+            starSpeed = ScaleToHighDPI(100f);
             gameOver = false;
 
             this.IsMouseVisible = true; // Hide the mouse within the app window
@@ -129,7 +131,7 @@ namespace StarShooter
             else
             {
                 swarm.Draw(spriteBatch);
-                ship.Draw(spriteBatch, shipDirection);
+                ship.Draw(spriteBatch, alpha, shipDirection);
 
                 var scoreString = ((int)score).ToString("d5");
                 Vector2 scoreSize = stateFont.MeasureString(scoreString);
@@ -141,14 +143,14 @@ namespace StarShooter
             {
                 // Draw game over texture
                 spriteBatch.Draw(gameOverTexture, new Vector2(screenWidth / 2 - gameOverTexture.Width / 2, screenHeight / 4 - gameOverTexture.Width / 2), Color.White);
-
                 String pressEnter = "Press Enter to restart!";
-
+                String yourScore = $"Your score: {score.ToString("d5")}";
                 // Measure the size of text in the given font
-                Vector2 pressEnterSize = stateFont.MeasureString(pressEnter);
-
+                Vector2 pressEnterSize = scoreFont.MeasureString(pressEnter);
+                Vector2 yourScoreSize = scoreFont.MeasureString(yourScore);
                 // Draw the text horizontally centered
-                spriteBatch.DrawString(stateFont, pressEnter, new Vector2(screenWidth / 2 - pressEnterSize.X / 2, screenHeight - 200), Color.White * ((float)alpha / 255));
+                spriteBatch.DrawString(scoreFont, pressEnter, new Vector2(screenWidth / 2 - pressEnterSize.X / 2, screenHeight - 200), Color.White * ((float)alpha / 255));
+                spriteBatch.DrawString(scoreFont, yourScore, new Vector2(screenWidth / 2 - yourScoreSize.X / 2, screenHeight - 500), Color.White);
             }
 
             spriteBatch.End();
@@ -166,37 +168,57 @@ namespace StarShooter
         {
             // TODO: Add your update logic here
             float elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            
+
+
             KeyboardHandler(); // Handle keyboard input
                                // Update animated SpriteClass objects based on their current rates of change
 
             UpdateColorBlink();
 
-            starsFront.Update(elapsedTime * 100);
-            starsBack.Update(elapsedTime * 50);
+            starsFront.Update(elapsedTime * starSpeed);
+            starsBack.Update(elapsedTime * (starSpeed / 2));
 
-            if (!gameStarted)
+            if (!gameStarted || gameOver)
                 return;
 
-            if (gameOver)
-            {
-                ship.Freeze();
-                swarm.Freeze();
-            }
-
-            swarm.Update(elapsedTime);
+            swarm.Update(elapsedTime, screenHeight);
             ship.Update(elapsedTime, screenWidth, screenHeight, shipBoundary);
 
             swarm.CheckCollisions(ship.Projectiles);
             ship.CheckCollisions(swarm.Projectiles);
 
-            score = (int)gameTime.TotalGameTime.TotalSeconds / 5;
+            //score = (int)gameTime.TotalGameTime.TotalSeconds / 5;
+
+            CreateProjectiles(screenWidth);
+
+            if (ship.Health <= 0)
+                gameOver = true;
 
             base.Update(gameTime);
         }
 
+        private void CreateProjectiles(float screenWidth)
+        {
+            var gameTimeSpan = DateTime.Now - gameStart;
+            int projectileCount = (int)gameTimeSpan.TotalSeconds / 10;
+
+            if (swarm.Projectiles.Count < projectileCount + 1)
+            {
+                var projectile = new Projectile(GraphicsDevice, Content.Load<Texture2D>("lazer"), ScaleToHighDPI(.8f));
+
+                int maxProjectileSpeed = (int)(projectileSpeed + (float)gameTimeSpan.TotalSeconds);
+
+                projectile.Y = 0; projectile.DY = random.Next((int)projectileSpeed, maxProjectileSpeed > 2000 ? 2000 : maxProjectileSpeed);
+                projectile.X = random.Next(10, (int)screenWidth - 10);
+                swarm.Projectiles.Add(projectile);
+                score++;
+            }
+        }
+
         int alphaDirection = 0;
         int alpha = 0;
+        private DateTime gameStart;
+
         private void UpdateColorBlink()
         {
             switch (alphaDirection)
@@ -249,10 +271,15 @@ namespace StarShooter
                 gameOver = false;
             }
 
+            if (gameOver)
+                return;
+
             // Jump if Space is pressed
             if (state.IsKeyDown(Keys.Space))
             {
                 //TODO: MENU!
+                //ship.Freeze();
+                //swarm.Freeze();
                 spaceDown = true;
             }
             else spaceDown = false;
@@ -287,6 +314,9 @@ namespace StarShooter
             score = 0;
             ship.X = screenWidth / 2;
             ship.Y = screenHeight * shipBoundary;
+            ship.Health = 100;
+            swarm.Projectiles.Clear();
+            gameStart = DateTime.Now;
         }
 
         public void StartLevel()
