@@ -1,0 +1,420 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{3D30D1EC-5A73-43D8-A6D6-245427B16312}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CardGame</RootNamespace>
+    <AssemblyName>CardGame</AssemblyName>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>..\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="SdlDotNet, Version=6.1.0.0, Culture=neutral, PublicKeyToken=26ad4f7e10c61408, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\SdlDotNet.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Card.cs" />
+    <Compile Include="Deck.cs" />
+    <Compile Include="CardDrawer.cs" />
+    <Compile Include="Hand.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\spq.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\cardBack.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\cl2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\cl3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\cl4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\cl5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\cl6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\cl7.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\cl8.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\cl9.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\cl10.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\cla.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\clj.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\clk.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\clq.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\di2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\di3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\di4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\di5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\di6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\di7.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\di8.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\di9.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\di10.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\dia.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\dij.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\dik.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\diq.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\he2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\he3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\he4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\he5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\he6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\he7.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\he8.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\he9.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\he10.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\hea.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\hej.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\hek.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\heq.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\jkr1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\jkr2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\sp2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\sp3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\sp4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\sp5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\sp6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\sp7.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\sp8.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\sp9.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\sp10.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\spa.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\spj.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\spk.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Ispq.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Icl2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Icl3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Icl4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Icl5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Icl6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Icl7.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Icl8.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Icl9.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Icl10.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Icla.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Iclj.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Iclk.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Iclq.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Idi2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Idi3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Idi4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Idi5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Idi6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Idi7.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Idi8.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Idi9.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Idi10.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Idia.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Idij.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Idik.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Idiq.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Ihe2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Ihe3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Ihe4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Ihe5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Ihe6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Ihe7.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Ihe8.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Ihe9.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Ihe10.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Ihea.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Ihej.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Ihek.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Iheq.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Isp2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Isp3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Isp4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Isp5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Isp6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Isp7.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Isp8.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Isp9.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Isp10.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Ispa.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Ispj.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Ispk.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
