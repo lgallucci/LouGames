@@ -27,6 +27,7 @@ namespace StarShooter
         bool gameOver;
 
         bool spaceDown;
+        ShipDirection shipDirection;
         bool gameStarted;
 
         float projectileSpeed;
@@ -50,6 +51,8 @@ namespace StarShooter
         /// </summary>
         protected override void Initialize()
         {
+            base.Initialize();
+
             // TODO: Add your initialization logic here
             ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
 
@@ -65,7 +68,7 @@ namespace StarShooter
             projectileSpeed = ScaleToHighDPI(30f);
             gameOver = false;
 
-            base.Initialize();
+            this.IsMouseVisible = true; // Hide the mouse within the app window
         }
 
         /// <summary>
@@ -112,7 +115,7 @@ namespace StarShooter
 
             if (!gameStarted)
             {
-                String title = "Star   Shooter";
+                String title = "Star    Shooter";
                 String pressSpace = "Press Space to start";
 
                 // Measure the size of text in the given font
@@ -121,13 +124,12 @@ namespace StarShooter
 
                 // Draw the text horizontally centered
                 spriteBatch.DrawString(stateFont, title, new Vector2(screenWidth / 2 - titleSize.X / 2, screenHeight / 3), Color.Fuchsia);
-                spriteBatch.DrawString(scoreFont, pressSpace, new Vector2(screenWidth / 2 - pressSpaceSize.X / 2, screenHeight / 2), new Color(255, 255, 255, alpha));
+                spriteBatch.DrawString(scoreFont, pressSpace, new Vector2(screenWidth / 2 - pressSpaceSize.X / 2, screenHeight / 2), Color.White * ((float)alpha / 255));
             }
             else
             {
                 swarm.Draw(spriteBatch);
-
-                ship.Draw(spriteBatch);
+                ship.Draw(spriteBatch, shipDirection);
 
                 var scoreString = ((int)score).ToString("d5");
                 Vector2 scoreSize = stateFont.MeasureString(scoreString);
@@ -146,7 +148,7 @@ namespace StarShooter
                 Vector2 pressEnterSize = stateFont.MeasureString(pressEnter);
 
                 // Draw the text horizontally centered
-                spriteBatch.DrawString(stateFont, pressEnter, new Vector2(screenWidth / 2 - pressEnterSize.X / 2, screenHeight - 200), Color.White);
+                spriteBatch.DrawString(stateFont, pressEnter, new Vector2(screenWidth / 2 - pressEnterSize.X / 2, screenHeight - 200), Color.White * ((float)alpha / 255));
             }
 
             spriteBatch.End();
@@ -170,9 +172,12 @@ namespace StarShooter
 
             UpdateColorBlink();
 
+            starsFront.Update(elapsedTime * 100);
+            starsBack.Update(elapsedTime * 50);
+
             if (!gameStarted)
                 return;
-                               
+
             if (gameOver)
             {
                 ship.Freeze();
@@ -181,8 +186,6 @@ namespace StarShooter
 
             swarm.Update(elapsedTime);
             ship.Update(elapsedTime, screenWidth, screenHeight, shipBoundary);
-            starsFront.Update(elapsedTime * 100);
-            starsBack.Update(elapsedTime * 50);
 
             swarm.CheckCollisions(ship.Projectiles);
             ship.CheckCollisions(swarm.Projectiles);
@@ -216,9 +219,7 @@ namespace StarShooter
                     break;
             }
         }
-
-
-
+        
         void KeyboardHandler()
         {
             KeyboardState state = Keyboard.GetState();
@@ -258,11 +259,20 @@ namespace StarShooter
 
             // Handle left and right
             if (state.IsKeyDown(Keys.A))
+            {
                 ship.DX = shipSpeedX * -1;
+                shipDirection = ShipDirection.Left;
+            }
             else if (state.IsKeyDown(Keys.D))
+            {
                 ship.DX = shipSpeedX;
+                shipDirection = ShipDirection.Right;
+            }
             else
+            {
                 ship.DX = 0;
+                shipDirection = ShipDirection.Middle;
+            }
 
             if (state.IsKeyDown(Keys.W))
                 ship.DY = shipSpeedY * -1;

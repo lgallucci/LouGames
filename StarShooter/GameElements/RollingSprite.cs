@@ -30,7 +30,7 @@ namespace StarShooter
         }
 
         // ScrollingBackground.Draw
-        public override void Draw(SpriteBatch batch)
+        public override void Draw(SpriteBatch batch, Rectangle? sourceRectangle = null)
         {
             // Draw the texture, if it is still onscreen.
             if (screenpos.Y < screenheight)

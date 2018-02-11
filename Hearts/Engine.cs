@@ -342,6 +342,8 @@ namespace Hearts
         /* SDL Events Functions */
         private void TickEvent(object sender, TickEventArgs e)
         {
+            if (gEngine == null) return;
+
             if (pauseTime > 0)
             {
                 pauseTime--;

@@ -33,7 +33,7 @@ namespace Hearts
         /* Constructor */
         internal GraphicsEngine(SurfaceControl surfaceControl)
         {
-            surf = Video.SetVideoMode(surfaceControl.Width, surfaceControl.Height, 32, false, false, false, false, false);
+            surf = Video.CreateRgbSurface(surfaceControl.Width, surfaceControl.Height, 32, 0, 0, 0, 0, true); 
             userHand = new List<Rectangle>();
 
             LoadImages();

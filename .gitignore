@@ -27,3 +27,4 @@
 /StarShooter/Content/bin
 /StarShooter/Content/obj
 *.suo
+*.csproj.user

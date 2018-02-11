@@ -6,6 +6,8 @@ namespace StarShooter
 {
     public abstract class SpriteClass
     {
+        float _height, _width;
+
         public SpriteClass(GraphicsDevice graphicsDevice, Texture2D texture, float scale)
         {
             this.Scale = scale;
@@ -22,24 +24,47 @@ namespace StarShooter
             this.Angle += this.DA * elapsedTime;
         }
 
-        public virtual void Draw(SpriteBatch spriteBatch)
+        public virtual void Draw(SpriteBatch spriteBatch, Rectangle? sourceRectangle = null)
         {
             Vector2 spritePosition = new Vector2(this.X, this.Y);
-            spriteBatch.Draw(Texture, spritePosition, null, Color.White, this.Angle, new Vector2(Texture.Width / 2, Texture.Height / 2), new Vector2(Scale, Scale), SpriteEffects.None, 0f);
+            spriteBatch.Draw(Texture, spritePosition, sourceRectangle, Color.White, this.Angle, new Vector2(Width / 2, Height / 2), new Vector2(Scale, Scale), SpriteEffects.None, 0f);
         }
 
         public bool RectangleCollision(SpriteClass otherSprite)
         {
-            if (this.X + this.Texture.Width * this.Scale * HITBOXSCALE / 2 < otherSprite.X - otherSprite.Texture.Width * otherSprite.Scale / 2) return false;
-            if (this.Y + this.Texture.Height * this.Scale * HITBOXSCALE / 2 < otherSprite.Y - otherSprite.Texture.Height * otherSprite.Scale / 2) return false;
-            if (this.X - this.Texture.Width * this.Scale * HITBOXSCALE / 2 > otherSprite.X + otherSprite.Texture.Width * otherSprite.Scale / 2) return false;
-            if (this.Y - this.Texture.Height * this.Scale * HITBOXSCALE / 2 > otherSprite.Y + otherSprite.Texture.Height * otherSprite.Scale / 2) return false;
+            if (this.X + Width * this.Scale * HITBOXSCALE / 2 < otherSprite.X - otherSprite.Texture.Width * otherSprite.Scale / 2) return false;
+            if (this.Y + Height * this.Scale * HITBOXSCALE / 2 < otherSprite.Y - otherSprite.Texture.Height * otherSprite.Scale / 2) return false;
+            if (this.X - Width * this.Scale * HITBOXSCALE / 2 > otherSprite.X + otherSprite.Texture.Width * otherSprite.Scale / 2) return false;
+            if (this.Y - Height * this.Scale * HITBOXSCALE / 2 > otherSprite.Y + otherSprite.Texture.Height * otherSprite.Scale / 2) return false;
             return true;
         }
 
         public void Freeze()
         {
-            throw new NotImplementedException();
+        }
+
+        public float Height
+        {
+            get
+            {
+                if (_height < 0)
+                    return this.Texture.Height;
+                else
+                    return _height;
+            }
+            set { _height = value; }
+        }
+
+        public float Width
+        {
+            get
+            {
+                if (_width < 0)
+                    return this.Texture.Height;
+                else
+                    return _width;
+            }
+            set { _width = value; }
         }
 
         const float HITBOXSCALE = .5f;
