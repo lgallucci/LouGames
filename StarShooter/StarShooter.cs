@@ -252,7 +252,7 @@ namespace StarShooter
             // Jump if Space is pressed
             if (state.IsKeyDown(Keys.Space))
             {
-                //TODO: PAUSE!
+                //TODO: MENU!
                 spaceDown = true;
             }
             else spaceDown = false;

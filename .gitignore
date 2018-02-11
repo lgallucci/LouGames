@@ -28,3 +28,6 @@
 /StarShooter/Content/obj
 *.suo
 *.csproj.user
+/StarShooter/AppPackages
+/StarShooter/BundleArtifacts
+/StarShooter/_pkginfo.txt
