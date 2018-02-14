@@ -12,14 +12,14 @@ namespace StarShooter
         Right = 2
     }
 
-    public class Ship : SpriteClass
+    public class Ship : MoveOnResizeSprite
     {
         Collection<Projectile> _projectiles;
         private bool blinking;
         private DateTime blinkingStart = DateTime.MinValue;
 
-        public Ship(GraphicsDevice graphicsDevice, Texture2D texture, float scale)
-            : base(graphicsDevice, texture, scale)
+        public Ship(Texture2D texture, float scaleX, float scaleY)
+            : base(texture, scaleX, scaleY)
         {
             _projectiles = new Collection<Projectile>();
             Height = 125;
@@ -72,11 +72,20 @@ namespace StarShooter
                 this.Y = screenHeight - this.Height / 2;
                 this.DY = 0;
             }
+
             if (blinkingStart > DateTime.MinValue && (DateTime.Now - blinkingStart).TotalSeconds > 5)
             {
                 blinking = false;
                 blinkingStart = DateTime.MinValue;
             }
+        }
+
+        public void UpdateScale(float scaleX, float scaleY, int screenWidth)
+        {
+            foreach (var projectile in _projectiles)
+                projectile.UpdateScale(scaleX, scaleY, screenWidth);
+
+            base.UpdateScale(scaleX, scaleY, screenWidth);
         }
 
         public void CheckCollisions(Collection<Projectile> projectiles)

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.UI.ViewManagement;
 
@@ -11,6 +12,9 @@ namespace StarShooter
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+
+        float originalWidth;
+        float originalHeight;
 
         float screenWidth;
         float screenHeight;
@@ -41,7 +45,11 @@ namespace StarShooter
 
         public StarShooter()
         {
+            ApplicationView.PreferredLaunchViewSize = new Size(1200, 900);
+            ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
+
             graphics = new GraphicsDeviceManager(this);
+
             Content.RootDirectory = "Content";
         }
 
@@ -53,13 +61,12 @@ namespace StarShooter
         /// </summary>
         protected override void Initialize()
         {
-            base.Initialize();
-
             // TODO: Add your initialization logic here
-            ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
 
             screenHeight = (float)ApplicationView.GetForCurrentView().VisibleBounds.Height;
+            originalHeight = screenHeight;
             screenWidth = (float)ApplicationView.GetForCurrentView().VisibleBounds.Width;
+            originalWidth = screenWidth;
             shipBoundary = screenHeight * .75F;
 
             gameStarted = false;
@@ -72,6 +79,29 @@ namespace StarShooter
             gameOver = false;
 
             this.IsMouseVisible = true; // Hide the mouse within the app window
+
+            this.Window.ClientSizeChanged += Window_ClientSizeChanged;
+
+            base.Initialize();
+        }
+
+        void Window_ClientSizeChanged(object sender, EventArgs e)
+        {
+            screenHeight = (float)ApplicationView.GetForCurrentView().VisibleBounds.Height;
+            screenWidth = (float)ApplicationView.GetForCurrentView().VisibleBounds.Width;
+            shipBoundary = screenHeight * .75F;
+
+            float scaleX = screenWidth / originalWidth;
+            float scaleY = screenHeight / originalHeight;
+
+            ship.UpdateScale(ScaleToHighDPI(.8f * scaleX), ScaleToHighDPI(.8f * scaleY), screenWidth);
+            swarm.UpdateScale(ScaleToHighDPI(1f * scaleX), ScaleToHighDPI(1f * scaleY), screenWidth);
+            starsFront.UpdateScale(ScaleToHighDPI(1.1f * scaleX), ScaleToHighDPI(1f * scaleY), screenWidth, screenHeight);
+            starsBack.UpdateScale(ScaleToHighDPI(1.1f * scaleX), ScaleToHighDPI(1f * scaleY), screenWidth, screenHeight);
+            lives.UpdateScale(ScaleToHighDPI(.4f * scaleX), ScaleToHighDPI(.4f * scaleY));
+            scoreFont = Content.Load<SpriteFont>("Score");
+            stateFont = Content.Load<SpriteFont>("GameState");
+            gameOverTexture = Content.Load<Texture2D>("game-over");
         }
 
         /// <summary>
@@ -84,11 +114,11 @@ namespace StarShooter
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-            ship = new Ship(GraphicsDevice, Content.Load<Texture2D>("ship"), ScaleToHighDPI(.8f));
-            swarm = new ShipCollection(GraphicsDevice, Content.Load<Texture2D>("swarm"), ScaleToHighDPI(1f));
-            starsFront = new RollingSprite(GraphicsDevice, Content.Load<Texture2D>("starsFront"), ScaleToHighDPI(1f));
-            starsBack = new RollingSprite(GraphicsDevice, Content.Load<Texture2D>("starsBack"), ScaleToHighDPI(1f));
-            lives = new LivesPanel(GraphicsDevice, Content.Load<Texture2D>("ship"), ScaleToHighDPI(.4f));
+            ship = new Ship(Content.Load<Texture2D>("ship"), ScaleToHighDPI(.8f), ScaleToHighDPI(.8f));
+            swarm = new ShipCollection(Content.Load<Texture2D>("swarm"), ScaleToHighDPI(1f), ScaleToHighDPI(1f));
+            starsFront = new RollingSprite(Content.Load<Texture2D>("starsFront"), ScaleToHighDPI(1.1f), ScaleToHighDPI(1f), screenWidth, screenHeight);
+            starsBack = new RollingSprite(Content.Load<Texture2D>("starsBack"), ScaleToHighDPI(1.1f), ScaleToHighDPI(1f), screenWidth, screenHeight);
+            lives = new LivesPanel(Content.Load<Texture2D>("ship"), ScaleToHighDPI(.4f), ScaleToHighDPI(.4f));
             scoreFont = Content.Load<SpriteFont>("Score");
             stateFont = Content.Load<SpriteFont>("GameState");
             gameOverTexture = Content.Load<Texture2D>("game-over");
@@ -173,7 +203,7 @@ namespace StarShooter
 
 
             KeyboardHandler(); // Handle keyboard input
-                               // Update animated SpriteClass objects based on their current rates of change
+                                          // Update animated SpriteClass objects based on their current rates of change
 
             UpdateColorBlink();
 
@@ -196,26 +226,31 @@ namespace StarShooter
                     ship.ResetHealth();
                 else
                     gameOver = true;
-            } 
+            }
 
             CreateProjectiles(screenWidth);
 
             base.Update(gameTime);
         }
-        
+
         private void CreateProjectiles(float screenWidth)
         {
             var gameTimeSpan = DateTime.Now - gameStart;
+
+            float scaleX = screenWidth / originalWidth;
+            float scaleY = screenHeight / originalHeight;
+
             int projectileCount = ((int)gameTimeSpan.TotalSeconds / 5) > 100 ? 100 : ((int)gameTimeSpan.TotalSeconds / 5);
 
             if (swarm.Projectiles.Count < projectileCount + 1)
             {
-                var projectile = new Projectile(GraphicsDevice, Content.Load<Texture2D>("lazer"), ScaleToHighDPI(.8f));
+                var projectile = new Projectile(Content.Load<Texture2D>("lazer"), ScaleToHighDPI(.8f * scaleX), ScaleToHighDPI(.8f * scaleY));
 
                 int maxProjectileSpeed = (int)(projectileSpeed + (float)gameTimeSpan.TotalSeconds);
 
-                projectile.Y = 0; projectile.DY = random.Next((int)projectileSpeed, maxProjectileSpeed > 2000 ? 2000 : maxProjectileSpeed);
-                projectile.X = random.Next(10, (int)screenWidth - 10);
+                var projectileX = random.Next(10, (int)screenWidth - 10);
+                var projectileY = random.Next((int)projectileSpeed, maxProjectileSpeed > 2000 ? 2000 : maxProjectileSpeed);
+                projectile.SetPosition(projectileX, 0, 0, projectileY, screenWidth);
                 swarm.Projectiles.Add(projectile);
                 score++;
             }
@@ -290,29 +325,32 @@ namespace StarShooter
             }
             else spaceDown = false;
 
+            float directionX, directionY;
             // Handle left and right
             if (state.IsKeyDown(Keys.A))
             {
-                ship.DX = shipSpeedX * -1;
+                directionX = shipSpeedX * -1;
                 shipDirection = ShipDirection.Left;
             }
             else if (state.IsKeyDown(Keys.D))
             {
-                ship.DX = shipSpeedX;
+                directionX = shipSpeedX;
                 shipDirection = ShipDirection.Right;
             }
             else
             {
-                ship.DX = 0;
+                directionX = 0;
                 shipDirection = ShipDirection.Middle;
             }
 
             if (state.IsKeyDown(Keys.W))
-                ship.DY = shipSpeedY * -1;
+                directionY = shipSpeedY * -1;
             else if (state.IsKeyDown(Keys.S))
-                ship.DY = shipSpeedY;
+                directionY = shipSpeedY;
             else
-                ship.DY = 0;
+                directionY = 0;
+
+            ship.SetPosition(ship.X, ship.Y, directionX, directionY, screenWidth);
         }
 
         public void StartGame()

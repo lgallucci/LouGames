@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="47897LouisGallucci.StarShooterRedux" Publisher="CN=B5D96AF4-63F0-45F4-994B-3CE789E4FDB6" Version="1.1.5.0" />
+  <Identity Name="47897LouisGallucci.StarShooterRedux" Publisher="CN=B5D96AF4-63F0-45F4-994B-3CE789E4FDB6" Version="1.1.7.0" />
   <mp:PhoneIdentity PhoneProductId="6561fdd3-4433-4513-9e55-e5d3506c11a0" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>Star Shooter Redux</DisplayName>
@@ -15,7 +15,7 @@
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="StarShooter.App">
-      <uap:VisualElements DisplayName="Star Shooter" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png" Description="Shoot dem bitches" BackgroundColor="black">
+      <uap:VisualElements DisplayName="Star Shooter" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png" Description="Shoot em cuh" BackgroundColor="black">
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png">
         </uap:DefaultTile>
         <uap:SplashScreen Image="Assets\start-splash.png" BackgroundColor="black" />

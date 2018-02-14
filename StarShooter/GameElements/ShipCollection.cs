@@ -10,9 +10,10 @@ namespace StarShooter
         private Collection<Ship> _shipCollection;
         private Collection<Projectile> _projectiles;
 
-        public ShipCollection(GraphicsDevice graphicsDevice, Texture2D texture, float scale)
+        public ShipCollection(Texture2D texture, float scaleX, float scaleY)
         {
-            this.Scale = scale;
+            this.ScaleX = scaleX;
+            this.ScaleY = scaleY;
             if (Texture == null)
             {
                 Texture = texture;
@@ -52,6 +53,15 @@ namespace StarShooter
             return true;
         }
 
+        public void UpdateScale(float scaleX, float scaleY, float screenWidth)
+        {
+            foreach (var ship in _shipCollection)
+                ship.UpdateScale(scaleX, scaleY, screenWidth);
+
+            foreach (var projectile in _projectiles)
+                projectile.UpdateScale(scaleX, scaleY, screenWidth);
+        }
+
         const float HITBOXSCALE = .5f;
 
         public Collection<Projectile> Projectiles
@@ -64,7 +74,13 @@ namespace StarShooter
             get;
         }
 
-        public float Scale
+        public float ScaleX
+        {
+            get;
+            set;
+        }
+
+        public float ScaleY
         {
             get;
             set;

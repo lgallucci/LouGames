@@ -6,22 +6,21 @@ namespace StarShooter
     public class RollingSprite : SpriteClass
     {
         private Vector2 screenpos, origin, texturesize;
-        private int screenheight;
+        private float _screenHeight;
 
-        public RollingSprite(GraphicsDevice graphicsDevice, Texture2D texture, float scale) 
-            : base(graphicsDevice, texture, scale)
+        public RollingSprite(Texture2D texture, float scaleX, float scaleY, float screenWidth, float screenHeight)
+            : base(texture, scaleX, scaleY)
         {
-            screenheight = graphicsDevice.Viewport.Height;
-            int screenwidth = graphicsDevice.Viewport.Width;
+            _screenHeight = screenHeight;
             // Set the origin so that we're drawing from the 
             // center of the top edge.
             origin = new Vector2(Texture.Width / 2, 0);
             // Set the screen position to the center of the screen.
-            screenpos = new Vector2(screenwidth / 2, screenheight / 2);
+            screenpos = new Vector2(screenWidth / 2, _screenHeight / 2);
             // Offset to draw the second texture, when necessary.
             texturesize = new Vector2(0, Texture.Height);
         }
-        
+
         public override void Update(float elapsedTime)
         {
             screenpos.Y += elapsedTime;
@@ -31,15 +30,28 @@ namespace StarShooter
         public override void Draw(SpriteBatch batch, Color? color = null, Rectangle? sourceRectangle = null)
         {
             // Draw the texture, if it is still onscreen.
-            if (screenpos.Y < screenheight)
+            if (screenpos.Y < _screenHeight)
             {
                 batch.Draw(Texture, screenpos, null,
-                     color ?? Color.White, 0, origin, 1, SpriteEffects.None, 0f);
+                     color ?? Color.White, 0, origin, new Vector2(this.ScaleX, this.ScaleY), SpriteEffects.None, 0f);
             }
             // Draw the texture a second time, behind the first,
             // to create the scrolling illusion.
             batch.Draw(Texture, screenpos - texturesize, null,
-                 color ?? Color.White, 0, origin, 1, SpriteEffects.None, 0f);
+                 color ?? Color.White, 0, origin, new Vector2(this.ScaleX, this.ScaleY), SpriteEffects.None, 0f);
+        }
+
+        public void UpdateScale(float scaleX, float scaleY, float screenWidth, float screenHeight)
+        {
+            _screenHeight = screenHeight;
+
+            origin = new Vector2(Texture.Width / 2, 0);
+
+            screenpos = new Vector2(screenWidth / 2, _screenHeight / 2);
+
+            texturesize = new Vector2(0, Texture.Height);
+
+            base.UpdateScale(scaleX, scaleY);
         }
     }
 }

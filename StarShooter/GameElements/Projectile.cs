@@ -2,10 +2,10 @@
 
 namespace StarShooter
 {
-    public class Projectile : SpriteClass
+    public class Projectile : MoveOnResizeSprite
     {
-        public Projectile(GraphicsDevice graphicsDevice, Texture2D texture, float scale) 
-            : base(graphicsDevice, texture, scale)
+        public Projectile(Texture2D texture, float scaleX, float scaleY)
+            : base(texture, scaleX, scaleY)
         {
             Strength = 100;
         }
