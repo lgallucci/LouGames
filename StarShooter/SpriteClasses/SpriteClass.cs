@@ -39,10 +39,6 @@ namespace StarShooter
             return true;
         }
 
-        public void Freeze()
-        {
-        }
-
         public float Height
         {
             get
@@ -67,7 +63,7 @@ namespace StarShooter
             set { _width = value; }
         }
 
-        const float HITBOXSCALE = .9f;
+        const float HITBOXSCALE = .75f;
 
         public Texture2D Texture
         {

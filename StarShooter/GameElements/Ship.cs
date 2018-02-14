@@ -83,14 +83,25 @@ namespace StarShooter
         {
             if (blinking) return;
 
-            foreach (var projectile in projectiles)
-                if (this.RectangleCollision(projectile))
+            for (int i = projectiles.Count - 1; i >= 0; i--)
+            {
+                if (this.RectangleCollision(projectiles[i]))
                 {
-                    Health -= projectile.Strength;
-                    projectile.Strength = 0;
-                    blinking = true;
-                    blinkingStart = DateTime.Now;
+                    Health -= projectiles[i].Strength;
+                    if (Health <= 0)
+                    {
+                        projectiles.RemoveAt(i);
+                        blinking = true;
+                        blinkingStart = DateTime.Now;
+                    }
+                    //TODO: EXPLOSION!
                 }
+            }
+        }
+
+        public void ResetHealth()
+        {
+            Health = 100;
         }
 
         public float Health

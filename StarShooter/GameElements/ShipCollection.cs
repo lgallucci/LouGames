@@ -52,12 +52,6 @@ namespace StarShooter
             return true;
         }
 
-        public void Freeze()
-        {
-            foreach (var ship in _shipCollection)
-                ship.Freeze();
-        }
-
         const float HITBOXSCALE = .5f;
 
         public Collection<Projectile> Projectiles
