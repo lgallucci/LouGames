@@ -28,10 +28,12 @@ namespace StarShooter
 
         SpriteFont scoreFont;
         SpriteFont stateFont;
+        SpriteFont stateFontMedium;
         Texture2D gameOverTexture;
         bool gameOver;
 
         bool spaceDown;
+        bool paused;
         ShipDirection shipDirection;
         bool gameStarted;
 
@@ -67,7 +69,7 @@ namespace StarShooter
             originalHeight = screenHeight;
             screenWidth = (float)ApplicationView.GetForCurrentView().VisibleBounds.Width;
             originalWidth = screenWidth;
-            shipBoundary = screenHeight * .75F;
+            shipBoundary = screenHeight * .6F;
 
             gameStarted = false;
             score = 0;
@@ -75,7 +77,7 @@ namespace StarShooter
             shipSpeedX = ScaleToHighDPI(400f);
             shipSpeedY = ScaleToHighDPI(400f);
             projectileSpeed = ScaleToHighDPI(150f);
-            starSpeed = ScaleToHighDPI(100f);
+            starSpeed = ScaleToHighDPI(40f);
             gameOver = false;
 
             this.IsMouseVisible = true; // Hide the mouse within the app window
@@ -89,19 +91,24 @@ namespace StarShooter
         {
             screenHeight = (float)ApplicationView.GetForCurrentView().VisibleBounds.Height;
             screenWidth = (float)ApplicationView.GetForCurrentView().VisibleBounds.Width;
-            shipBoundary = screenHeight * .75F;
+            shipBoundary = screenHeight * .6F;
 
             float scaleX = screenWidth / originalWidth;
             float scaleY = screenHeight / originalHeight;
 
-            ship.UpdateScale(ScaleToHighDPI(.8f * scaleX), ScaleToHighDPI(.8f * scaleY), screenWidth);
-            swarm.UpdateScale(ScaleToHighDPI(1f * scaleX), ScaleToHighDPI(1f * scaleY), screenWidth);
+            ship.UpdateScale(ScaleToHighDPI(.8f * scaleX), ScaleToHighDPI(.8f * scaleY), screenWidth, screenHeight);
+
+            foreach (var projectile in ship.Projectiles)
+                projectile.UpdateScale(ScaleToHighDPI(.5f * scaleX), ScaleToHighDPI(.5f * scaleY), screenWidth, screenHeight);
+
+            swarm.UpdateScale(ScaleToHighDPI(1f * scaleX), ScaleToHighDPI(1f * scaleY), screenWidth, screenHeight);
+            
+            foreach (var projectile in swarm.Projectiles)
+                projectile.UpdateScale(ScaleToHighDPI(.5f * scaleX), ScaleToHighDPI(.5f * scaleY), screenWidth, screenHeight);
+
             starsFront.UpdateScale(ScaleToHighDPI(1.1f * scaleX), ScaleToHighDPI(1f * scaleY), screenWidth, screenHeight);
             starsBack.UpdateScale(ScaleToHighDPI(1.1f * scaleX), ScaleToHighDPI(1f * scaleY), screenWidth, screenHeight);
             lives.UpdateScale(ScaleToHighDPI(.4f * scaleX), ScaleToHighDPI(.4f * scaleY));
-            scoreFont = Content.Load<SpriteFont>("Score");
-            stateFont = Content.Load<SpriteFont>("GameState");
-            gameOverTexture = Content.Load<Texture2D>("game-over");
         }
 
         /// <summary>
@@ -121,6 +128,7 @@ namespace StarShooter
             lives = new LivesPanel(Content.Load<Texture2D>("ship"), ScaleToHighDPI(.4f), ScaleToHighDPI(.4f));
             scoreFont = Content.Load<SpriteFont>("Score");
             stateFont = Content.Load<SpriteFont>("GameState");
+            stateFontMedium = Content.Load<SpriteFont>("GameStateMedium");
             gameOverTexture = Content.Load<Texture2D>("game-over");
         }
 
@@ -166,9 +174,23 @@ namespace StarShooter
                 ship.Draw(spriteBatch, alpha, shipDirection);
 
                 var scoreString = ((int)score).ToString("d5");
-                Vector2 scoreSize = stateFont.MeasureString(scoreString);
+                Vector2 scoreSize = scoreFont.MeasureString(scoreString);
 
                 spriteBatch.DrawString(scoreFont, scoreString, new Vector2(10, 10), Color.White);
+            }
+
+            if (paused)
+            {
+                String title = "Paused";
+                String pressSpace = "Press Space to resume";
+
+                // Measure the size of text in the given font
+                Vector2 titleSize = stateFontMedium.MeasureString(title);
+                Vector2 pressSpaceSize = scoreFont.MeasureString(pressSpace);
+
+                // Draw the text horizontally centered
+                spriteBatch.DrawString(stateFontMedium, title, new Vector2(screenWidth / 2 - titleSize.X / 2, screenHeight / 3), Color.Fuchsia);
+                spriteBatch.DrawString(scoreFont, pressSpace, new Vector2(screenWidth / 2 - pressSpaceSize.X / 2, screenHeight / 2), Color.White * ((float)alpha / 255));
             }
 
             if (gameOver)
@@ -208,9 +230,9 @@ namespace StarShooter
             UpdateColorBlink();
 
             starsFront.Update(elapsedTime * starSpeed);
-            starsBack.Update(elapsedTime * (starSpeed / 2));
+            starsBack.Update(elapsedTime * (starSpeed *.6f));
 
-            if (!gameStarted || gameOver)
+            if (!gameStarted || gameOver || paused)
                 return;
 
             swarm.Update(elapsedTime, screenHeight);
@@ -244,13 +266,13 @@ namespace StarShooter
 
             if (swarm.Projectiles.Count < projectileCount + 1)
             {
-                var projectile = new Projectile(Content.Load<Texture2D>("lazer"), ScaleToHighDPI(.8f * scaleX), ScaleToHighDPI(.8f * scaleY));
+                var projectile = new Projectile(Content.Load<Texture2D>("lazer"), ScaleToHighDPI(.5f * scaleX), ScaleToHighDPI(.5f * scaleY));
 
                 int maxProjectileSpeed = (int)(projectileSpeed + (float)gameTimeSpan.TotalSeconds);
 
                 var projectileX = random.Next(10, (int)screenWidth - 10);
                 var projectileY = random.Next((int)projectileSpeed, maxProjectileSpeed > 2000 ? 2000 : maxProjectileSpeed);
-                projectile.SetPosition(projectileX, 0, 0, projectileY, screenWidth);
+                projectile.SetPosition(projectileX, 0, 0, projectileY, screenWidth, screenHeight);
                 swarm.Projectiles.Add(projectile);
                 score++;
             }
@@ -292,7 +314,7 @@ namespace StarShooter
             {
                 Exit();
             }
-
+            
             // Start the game if Space is pressed.
             if (!gameStarted)
             {
@@ -300,8 +322,8 @@ namespace StarShooter
                 {
                     StartGame();
                     gameStarted = true;
-                    spaceDown = true;
                     gameOver = false;
+                    spaceDown = true;
                 }
                 return;
             }
@@ -318,12 +340,17 @@ namespace StarShooter
             // Jump if Space is pressed
             if (state.IsKeyDown(Keys.Space))
             {
-                //TODO: MENU!
-                //ship.Freeze();
-                //swarm.Freeze();
-                spaceDown = true;
+                if (!spaceDown)
+                {
+                    spaceDown = true;
+                    paused = !paused;
+                }
             }
-            else spaceDown = false;
+            else
+                spaceDown = false;
+
+            if (paused)
+                return;
 
             float directionX, directionY;
             // Handle left and right
@@ -350,7 +377,7 @@ namespace StarShooter
             else
                 directionY = 0;
 
-            ship.SetPosition(ship.X, ship.Y, directionX, directionY, screenWidth);
+            ship.SetPosition(ship.X, ship.Y, directionX, directionY, screenWidth, screenHeight);
         }
 
         public void StartGame()

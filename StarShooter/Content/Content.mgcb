@@ -99,3 +99,10 @@
 /processorParam:TextureFormat=Color
 /build:lazer.png
 
+#begin GameStateMedium.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:GameStateMedium.spritefont
+

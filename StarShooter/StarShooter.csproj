@@ -118,6 +118,7 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
+    <None Include="Content\GameStateMedium.spritefont" />
     <None Include="Content\GameState.spritefont" />
     <None Include="Content\Score.spritefont" />
     <None Include="StarShooter_StoreKey.pfx" />

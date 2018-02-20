@@ -53,13 +53,10 @@ namespace StarShooter
             return true;
         }
 
-        public void UpdateScale(float scaleX, float scaleY, float screenWidth)
+        public void UpdateScale(float scaleX, float scaleY, float screenWidth, float screenHeight)
         {
             foreach (var ship in _shipCollection)
-                ship.UpdateScale(scaleX, scaleY, screenWidth);
-
-            foreach (var projectile in _projectiles)
-                projectile.UpdateScale(scaleX, scaleY, screenWidth);
+                ship.UpdateScale(scaleX, scaleY, screenWidth, screenHeight);
         }
 
         const float HITBOXSCALE = .5f;

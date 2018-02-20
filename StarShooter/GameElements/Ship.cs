@@ -80,14 +80,6 @@ namespace StarShooter
             }
         }
 
-        public void UpdateScale(float scaleX, float scaleY, int screenWidth)
-        {
-            foreach (var projectile in _projectiles)
-                projectile.UpdateScale(scaleX, scaleY, screenWidth);
-
-            base.UpdateScale(scaleX, scaleY, screenWidth);
-        }
-
         public void CheckCollisions(Collection<Projectile> projectiles)
         {
             if (blinking) return;

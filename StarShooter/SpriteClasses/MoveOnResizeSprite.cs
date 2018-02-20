@@ -10,9 +10,10 @@ namespace StarShooter
         {
         }
 
-        public void UpdateScale(float scaleX, float scaleY, float screenWidth)
+        public void UpdateScale(float scaleX, float scaleY, float screenWidth, float screenHeight)
         {
             this.X = screenWidth * PercentOfWidth;
+            this.Y = screenHeight * PercentOfHeight;
             base.UpdateScale(scaleX, scaleY);
         }
 
@@ -21,9 +22,10 @@ namespace StarShooter
             throw new NotImplementedException();
         }
 
-        public void SetPosition(float x, float y, float dX, float dY, float screenWidth)
+        public void SetPosition(float x, float y, float dX, float dY, float screenWidth, float screenHeight)
         {
             PercentOfWidth = x / screenWidth;
+            PercentOfHeight = y / screenHeight;
             base.SetPosition(x, y, dX, dY);
         }
 
@@ -33,6 +35,12 @@ namespace StarShooter
         }
 
         public float PercentOfWidth
+        {
+            get;
+            set;
+        }
+
+        public float PercentOfHeight
         {
             get;
             set;
