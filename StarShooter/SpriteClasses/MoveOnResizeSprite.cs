@@ -22,14 +22,15 @@ namespace StarShooter
             throw new NotImplementedException();
         }
 
-        public void SetPosition(float x, float y, float dX, float dY, float screenWidth, float screenHeight)
+        public void Update(float elapsedTime, float screenWidth, float screenHeight)
         {
-            PercentOfWidth = x / screenWidth;
-            PercentOfHeight = y / screenHeight;
-            base.SetPosition(x, y, dX, dY);
+            base.Update(elapsedTime);
+
+            this.PercentOfHeight = Y / screenHeight;
+            this.PercentOfWidth = X / screenWidth;
         }
 
-        public override void SetPosition(float x, float y, float dX, float dY)
+        public override void Update(float elapsedTime)
         {
             throw new NotImplementedException();
         }

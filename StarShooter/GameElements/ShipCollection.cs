@@ -10,29 +10,34 @@ namespace StarShooter
         private Collection<Ship> _shipCollection;
         private Collection<Projectile> _projectiles;
 
-        public ShipCollection(Texture2D texture, float scaleX, float scaleY)
+        public ShipCollection(float scaleX, float scaleY)
         {
             this.ScaleX = scaleX;
             this.ScaleY = scaleY;
-            if (Texture == null)
-            {
-                Texture = texture;
-            }
+
             _shipCollection = new Collection<Ship>();
             _projectiles = new Collection<Projectile>();
         }
 
-        public void Update(float elapsedTime, float screenHeight)
+        public void Update(float elapsedTime, float screenWidth, float screenHeight)
         {
-            foreach (var ship in _shipCollection)
-                ship.Update(elapsedTime);
+            //foreach (var ship in _shipCollection)
+            //    ship.Update(elapsedTime, screenWidth, screenHeight);
 
             for (int i = _projectiles.Count - 1; i >= 0; i--)
             {
                 if (_projectiles[i].Y > screenHeight)
                     _projectiles.Remove(_projectiles[i]);
                 else
-                    _projectiles[i].Update(elapsedTime);
+                    _projectiles[i].Update(elapsedTime, screenWidth, screenHeight);
+            }
+
+            for (int i = _shipCollection.Count - 1; i >= 0; i--)
+            {
+                if (_shipCollection[i].Y > screenHeight)
+                    _shipCollection.Remove(_shipCollection[i]);
+                else
+                    _shipCollection[i].Update(elapsedTime, screenWidth, screenHeight);
             }
         }
 
@@ -47,10 +52,14 @@ namespace StarShooter
 
         public bool CheckCollisions(Collection<Projectile> projectiles)
         {
-            foreach (var ship in _shipCollection)
-                ship.CheckCollisions(projectiles);
-
-            return true;
+            bool collision = false;
+            for (int i = _shipCollection.Count - 1; i >= 0; i--)
+                if (_shipCollection[i].CheckCollisions(projectiles))
+                {
+                    _shipCollection.Remove(_shipCollection[i]);
+                    collision= true;
+                }
+            return collision;
         }
 
         public void UpdateScale(float scaleX, float scaleY, float screenWidth, float screenHeight)
@@ -66,9 +75,9 @@ namespace StarShooter
             get { return _projectiles; }
         }
 
-        public Texture2D Texture
+        public Collection<Ship> Ships
         {
-            get;
+            get { return _shipCollection; }
         }
 
         public float ScaleX
