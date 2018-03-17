@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 
-namespace StarShooter
+namespace StarShooter.GameElements
 {
     public class Projectile : MoveOnResizeSprite
     {

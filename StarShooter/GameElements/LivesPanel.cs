@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace StarShooter
+namespace StarShooter.GameElements
 {
     public class LivesPanel : SpriteClass
     {

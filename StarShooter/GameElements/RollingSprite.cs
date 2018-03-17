@@ -1,7 +1,8 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace StarShooter
+namespace StarShooter.GameElements
 {
     public class RollingSprite : SpriteClass
     {
@@ -21,10 +22,15 @@ namespace StarShooter
             texturesize = new Vector2(0, Texture.Height);
         }
 
-        public override void Update(float elapsedTime)
+        public void Update(GameTime gameTime, float starSpeed)
         {
-            screenpos.Y += elapsedTime;
+            screenpos.Y += (float)gameTime.ElapsedGameTime.TotalSeconds * starSpeed;
             screenpos.Y = screenpos.Y % Texture.Height;
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            throw new NotImplementedException();
         }
 
         public override void Draw(SpriteBatch batch, Color? color = null, Rectangle? sourceRectangle = null)

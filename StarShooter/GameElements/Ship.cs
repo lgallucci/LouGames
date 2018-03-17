@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace StarShooter
+namespace StarShooter.GameElements
 {
     public enum ShipDirection
     {
@@ -14,14 +13,24 @@ namespace StarShooter
 
     public class Ship : MoveOnResizeSprite
     {
-        Collection<Projectile> _projectiles;
-        private bool blinking;
-        private DateTime blinkingStart = DateTime.MinValue;
+        float projectileSpeed;
 
-        public Ship(Texture2D texture, float scaleX, float scaleY)
+        public Texture2D LazerTexture { get; private set; }
+        public Texture2D ExplosionTexture { get; private set; }
+
+        float projectileSize = .5f;
+
+        private bool blinking;
+        double blinkTime = 0;
+
+        public Ship(Texture2D texture, Texture2D lazerTexture, Texture2D explosionTexture, float scaleX, float scaleY)
             : base(texture, scaleX, scaleY)
         {
-            _projectiles = new Collection<Projectile>();
+            Projectiles = new List<Projectile>();
+
+            projectileSpeed = StarShooter.ScaleToHighDPI(150f);
+            LazerTexture = lazerTexture;
+            ExplosionTexture = explosionTexture;
         }
 
         public void Draw(SpriteBatch spriteBatch, float alpha, ShipDirection direction)
@@ -46,13 +55,21 @@ namespace StarShooter
 
             this.Draw(spriteBatch, blinking ? Color.White * (alpha / 255) : Color.White, sourceRectangle);
 
-            foreach (var projectile in _projectiles)
+            foreach (var projectile in Projectiles)
                 projectile.Draw(spriteBatch);
         }
 
-        public void Update(float elapsedTime, float screenWidth, float screenHeight, float topBoundary)
+        public override void UpdateScale(float scaleX, float scaleY, float screenWidth, float screenHeight)
         {
-            base.Update(elapsedTime, screenWidth, screenHeight);
+            foreach (var projectile in Projectiles)
+                projectile.UpdateScale(StarShooter.ScaleToHighDPI(projectileSize * scaleX), StarShooter.ScaleToHighDPI(projectileSize * scaleY), screenWidth, screenHeight);
+
+            base.UpdateScale(scaleX, scaleY, screenWidth, screenHeight);
+        }
+
+        public void Update(GameTime gameTime, float screenWidth, float screenHeight, float topBoundary)
+        {
+            base.Update(gameTime, screenWidth, screenHeight);
 
             if (this.X > screenWidth - this.Width / 2)
             {
@@ -79,22 +96,39 @@ namespace StarShooter
                 this.DY = 0;
             }
 
-            for (int i = _projectiles.Count - 1; i >= 0; i--)
+            CreateProjectiles(gameTime);
+
+            for (int i = Projectiles.Count - 1; i >= 0; i--)
             {
-                if (_projectiles[i].Y <= 0)
-                    _projectiles.Remove(_projectiles[i]);
+                if (Projectiles[i].Y <= 0)
+                    Projectiles.Remove(Projectiles[i]); //_projectiles[i].Active = false;
                 else
-                    _projectiles[i].Update(elapsedTime, screenWidth, screenHeight);
+                    Projectiles[i].Update(gameTime, screenWidth, screenHeight);
             }
 
-            if (blinkingStart > DateTime.MinValue && (DateTime.Now - blinkingStart).TotalSeconds > 5)
+            if (blinkTime > 0 && (gameTime.TotalGameTime.TotalSeconds - blinkTime) > 5)
             {
+                blinkTime = 0;
                 blinking = false;
-                blinkingStart = DateTime.MinValue;
             }
         }
 
-        public bool CheckCollisions(Collection<Projectile> projectiles)
+        int projectileInterval = 500;
+        double lastProjectile = 0;
+        int projectileCount = 1;
+        private void CreateProjectiles(GameTime gameTime)
+        {
+            if (Projectiles.Count < projectileCount && (lastProjectile + projectileInterval) < gameTime.TotalGameTime.TotalMilliseconds)
+            {
+                var projectile = new Projectile(this.LazerTexture, StarShooter.ScaleToHighDPI(projectileSize * ScaleX), StarShooter.ScaleToHighDPI(projectileSize * ScaleY));
+
+                projectile.SetPosition(X, Y - (Height / 2), 0, -3 * projectileSpeed);
+                Projectiles.Add(projectile);
+                lastProjectile = gameTime.TotalGameTime.TotalMilliseconds;
+            }
+        }
+
+        public bool CheckCollisions(List<Projectile> projectiles, GameTime gameTime)
         {
             if (blinking) return false;
 
@@ -103,12 +137,12 @@ namespace StarShooter
                 if (this.RectangleCollision(projectiles[i]))
                 {
                     Health -= projectiles[i].Strength;
-                    projectiles.RemoveAt(i);
+                    projectiles.Remove(projectiles[i]);
 
                     if (Health <= 0)
                     {
+                        blinkTime = gameTime.TotalGameTime.TotalSeconds;
                         blinking = true;
-                        blinkingStart = DateTime.Now;
                         return true;
                         //TODO: EXPLOSION!
                     }
@@ -117,7 +151,7 @@ namespace StarShooter
             return false;
         }
 
-        public bool CheckCollisions(Collection<Ship> ships)
+        public bool CheckCollisions(List<Ship> ships, GameTime gameTime)
         {
             if (blinking) return false;
 
@@ -130,8 +164,8 @@ namespace StarShooter
 
                     if (Health <= 0)
                     {
+                        blinkTime = gameTime.TotalGameTime.TotalSeconds;
                         blinking = true;
-                        blinkingStart = DateTime.Now;
                         return true;
                         //TODO: EXPLOSION!
                     }
@@ -153,9 +187,15 @@ namespace StarShooter
 
         public bool Enemy { get; set; }
 
-        public Collection<Projectile> Projectiles
+        public List<Projectile> Projectiles { get; }
+
+        internal void UpdateProjectiles(int score)
         {
-            get { return _projectiles; }
+            if (score < 250 && projectileCount != 1) projectileCount = 2; projectileInterval = (1000 / projectileCount);
+            if (score > 250 && projectileCount == 1) projectileCount = 2; projectileInterval = (1000 / projectileCount);
+            if (score > 1000 && projectileCount == 2) projectileCount = 3; projectileInterval = (1000 / projectileCount);
+            if (score > 1500 && projectileCount == 3) projectileCount = 4; projectileInterval = (1500 / projectileCount);
+            if (score > 2000 && projectileCount == 4) projectileCount = 5; projectileInterval = (1500 / projectileCount);
         }
     }
 }

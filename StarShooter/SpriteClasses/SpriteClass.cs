@@ -25,8 +25,10 @@ namespace StarShooter
             _hitbox.Height = (int)(Height * this.ScaleY * HITBOXSCALE);
         }
 
-        public virtual void Update(float elapsedTime)
+        public virtual void Update(GameTime gameTime)
         {
+            float elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
             this.X += this.DX * elapsedTime;
             this.Y += this.DY * elapsedTime;
             this.Angle += this.DA * elapsedTime;
@@ -58,7 +60,7 @@ namespace StarShooter
 #if DEBUG
             Texture2D pixel = new Texture2D(spriteBatch.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
             pixel.SetData(new[] { Color.White });
-            spriteBatch.Draw(pixel, _hitbox, Color.DarkGreen);
+            spriteBatch.Draw(pixel, _hitbox, Color.LightGreen);
 #endif
         }
 
@@ -68,6 +70,8 @@ namespace StarShooter
                 return true;
             return false;
         }
+
+        public bool Active { get; set; }
 
         public float Height
         {
@@ -97,6 +101,7 @@ namespace StarShooter
 
         private Rectangle _hitbox = new Rectangle();
         public Rectangle Hitbox { get { return _hitbox; } }
+
 
         public Texture2D Texture
         {

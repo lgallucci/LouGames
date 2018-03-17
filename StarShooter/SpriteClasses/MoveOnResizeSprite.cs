@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 
 namespace StarShooter
@@ -10,7 +11,7 @@ namespace StarShooter
         {
         }
 
-        public void UpdateScale(float scaleX, float scaleY, float screenWidth, float screenHeight)
+        public virtual void UpdateScale(float scaleX, float scaleY, float screenWidth, float screenHeight)
         {
             this.X = screenWidth * PercentOfWidth;
             this.Y = screenHeight * PercentOfHeight;
@@ -22,15 +23,15 @@ namespace StarShooter
             throw new NotImplementedException();
         }
 
-        public void Update(float elapsedTime, float screenWidth, float screenHeight)
+        public void Update(GameTime gameTime, float screenWidth, float screenHeight)
         {
-            base.Update(elapsedTime);
-
             this.PercentOfHeight = Y / screenHeight;
             this.PercentOfWidth = X / screenWidth;
+
+            base.Update(gameTime);
         }
 
-        public override void Update(float elapsedTime)
+        public override void Update(GameTime gameTime)
         {
             throw new NotImplementedException();
         }

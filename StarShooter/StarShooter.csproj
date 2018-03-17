@@ -101,6 +101,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GameElements\Animation.cs" />
     <Compile Include="GameElements\LivesPanel.cs" />
     <Compile Include="GameElements\Projectile.cs" />
     <Compile Include="MainPage.xaml.cs">
@@ -140,6 +141,7 @@
     <Content Include="Content\starsFront.png" />
     <Content Include="Content\swarm.png" />
     <None Include="Package.StoreAssociation.xml" />
+    <Content Include="Content\swarm_explode.png" />
     <Content Include="Properties\Default.rd.xml" />
   </ItemGroup>
   <ItemGroup>

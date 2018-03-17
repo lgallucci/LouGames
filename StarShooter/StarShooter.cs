@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using StarShooter.GameElements;
 using System;
 using Windows.Foundation;
 using Windows.Graphics.Display;
@@ -37,7 +38,6 @@ namespace StarShooter
         ShipDirection shipDirection;
         bool gameStarted;
 
-        float projectileSpeed;
         float shipSpeedX;
         float shipSpeedY;
         float starSpeed;
@@ -45,7 +45,6 @@ namespace StarShooter
 
         float swarmSize = .6f;
         float shipSize = .8f;
-        float projectileSize = .5f;
 
         Random random;
 
@@ -74,7 +73,6 @@ namespace StarShooter
             random = new Random();
             shipSpeedX = ScaleToHighDPI(400f);
             shipSpeedY = ScaleToHighDPI(400f);
-            projectileSpeed = ScaleToHighDPI(150f);
             starSpeed = ScaleToHighDPI(40f);
             gameOver = false;
 
@@ -96,13 +94,7 @@ namespace StarShooter
 
             ship.UpdateScale(ScaleToHighDPI(shipSize * scaleX), ScaleToHighDPI(shipSize * scaleY), screenWidth, screenHeight);
 
-            foreach (var projectile in ship.Projectiles)
-                projectile.UpdateScale(ScaleToHighDPI(projectileSize * scaleX), ScaleToHighDPI(projectileSize * scaleY), screenWidth, screenHeight);
-
-            swarm.UpdateScale(ScaleToHighDPI(swarmSize * scaleX), ScaleToHighDPI(swarmSize * scaleY), screenWidth, screenHeight);
-            
-            foreach (var projectile in swarm.Projectiles)
-                projectile.UpdateScale(ScaleToHighDPI(projectileSize * scaleX), ScaleToHighDPI(projectileSize * scaleY), screenWidth, screenHeight);
+            swarm.UpdateScale(ScaleToHighDPI(swarmSize * scaleX), ScaleToHighDPI(swarmSize * scaleY), screenWidth, screenHeight);            
 
             starsFront.UpdateScale(ScaleToHighDPI(1.1f * scaleX), ScaleToHighDPI(1f * scaleY), screenWidth, screenHeight);
             starsBack.UpdateScale(ScaleToHighDPI(1.1f * scaleX), ScaleToHighDPI(1f * scaleY), screenWidth, screenHeight);
@@ -115,10 +107,10 @@ namespace StarShooter
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-            ship = new Ship(Content.Load<Texture2D>("ship"), ScaleToHighDPI(shipSize), ScaleToHighDPI(shipSize));
+            ship = new Ship(Content.Load<Texture2D>("ship"), Content.Load<Texture2D>("lazer"), Content.Load<Texture2D>("swarm_explode"), ScaleToHighDPI(shipSize), ScaleToHighDPI(shipSize));
             ship.Height = 125; ship.Width = 100;
                 
-            swarm = new ShipCollection(ScaleToHighDPI(1f), ScaleToHighDPI(1f));
+            swarm = new ShipCollection(Content.Load<Texture2D>("swarm"), Content.Load<Texture2D>("lazer"), Content.Load<Texture2D>("swarm_explode"), ScaleToHighDPI(swarmSize), ScaleToHighDPI(swarmSize));
             starsFront = new RollingSprite(Content.Load<Texture2D>("starsFront"), ScaleToHighDPI(1.1f), ScaleToHighDPI(1f), screenWidth, screenHeight);
             starsBack = new RollingSprite(Content.Load<Texture2D>("starsBack"), ScaleToHighDPI(1.1f), ScaleToHighDPI(1f), screenWidth, screenHeight);
             lives = new LivesPanel(Content.Load<Texture2D>("ship"), ScaleToHighDPI(.4f), ScaleToHighDPI(.4f));
@@ -202,27 +194,27 @@ namespace StarShooter
         }
 
         protected override void Update(GameTime gameTime)
-        {
-            // TODO: Add your update logic here
-            float elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            
-            KeyboardHandler(); // Handle keyboard input
-                               // Update animated SpriteClass objects based on their current rates of change
+        {     
+            // Handle keyboard input
+            KeyboardHandler(gameTime); 
+
+            // Update animated SpriteClass objects based on their current rates of change
 
             UpdateColorBlink();
 
-            starsFront.Update(elapsedTime * starSpeed);
-            starsBack.Update(elapsedTime * (starSpeed *.6f));
+            starsFront.Update(gameTime, starSpeed);
+            starsBack.Update(gameTime, (starSpeed *.6f));
 
             if (!gameStarted || gameOver || paused)
                 return;
 
-            swarm.Update(elapsedTime, screenWidth, screenHeight);
-            ship.Update(elapsedTime, screenWidth, screenHeight, shipBoundary);
-            lives.Update(elapsedTime);
-            if (swarm.CheckCollisions(ship.Projectiles)) score += 5;
-            ship.CheckCollisions(swarm.Projectiles);
-            ship.CheckCollisions(swarm.Ships);
+            score += swarm.Update(gameTime, screenWidth, screenHeight, gameTime.TotalGameTime.TotalSeconds - gameStart - pauseTime);
+            ship.Update(gameTime, screenWidth, screenHeight, shipBoundary);
+            lives.Update(gameTime);
+
+            if (swarm.CheckCollisions(ship.Projectiles, gameTime)) score += 5;
+            //ship.CheckCollisions(swarm.Projectiles);
+            ship.CheckCollisions(swarm.Ships, gameTime);
 
             if (ship.Health <= 0)
             {
@@ -233,58 +225,13 @@ namespace StarShooter
                     gameOver = true;
             }
 
-            CreateProjectiles(screenWidth);
-            CreateSwarm(screenWidth);
+            ship.UpdateProjectiles(score);
 
             base.Update(gameTime);
         }
 
-        private void CreateSwarm(float screenWidth)
-        {
-            var gameTimeSpan = DateTime.Now - gameStart;
-
-            float scaleX = screenWidth / originalWidth;
-            float scaleY = screenHeight / originalHeight;
-
-            var enemyTicker = ((int)(gameTimeSpan.TotalSeconds - pauseTime.TotalSeconds) / 5);
-            int enemyCount = enemyTicker > 100 ? 100 : enemyTicker;
-
-            if (swarm.Ships.Count < enemyCount + 1)
-            {
-                var enemy = new Ship(Content.Load<Texture2D>("swarm"), ScaleToHighDPI(swarmSize * scaleX), ScaleToHighDPI(swarmSize * scaleY));
-                enemy.Enemy = true; enemy.HITBOXSCALE = .9f;
-
-                int maxEnemySpeed = (int)(projectileSpeed + (float)gameTimeSpan.TotalSeconds);
-
-                var enemyX = random.Next(10, (int)screenWidth - 10);
-                var enemyY = random.Next((int)projectileSpeed, maxEnemySpeed > 2000 ? 2000 : maxEnemySpeed);
-                enemy.SetPosition(enemyX, 0, 0, enemyY);
-                swarm.Ships.Add(enemy);
-                score++;
-            }
-        }
-
-        DateTime lastShot = DateTime.Now;
-        private void CreateProjectiles(float screenWidth)
-        {
-            var gameTimeSpan = DateTime.Now - gameStart;
-
-            float scaleX = screenWidth / originalWidth;
-            float scaleY = screenHeight / originalHeight;
-
-            if (ship.Projectiles.Count < 2 && lastShot.AddMilliseconds(250) < DateTime.Now )
-            {
-                var projectile = new Projectile(Content.Load<Texture2D>("lazer"), ScaleToHighDPI(projectileSize * scaleX), ScaleToHighDPI(projectileSize * scaleY));
-
-                projectile.SetPosition(ship.X, ship.Y - (ship.Height / 2), 0, -3 * projectileSpeed);
-                ship.Projectiles.Add(projectile);
-                lastShot = DateTime.Now;
-            }
-        }
-
         int alphaDirection = 0;
         int alpha = 0;
-        private DateTime gameStart;
 
         private void UpdateColorBlink()
         {
@@ -308,9 +255,10 @@ namespace StarShooter
                     break;
             }
         }
-        DateTime pauseStart;
-        TimeSpan pauseTime;
-        void KeyboardHandler()
+
+        double pauseStart = 0;
+        double pauseTime = 0;
+        void KeyboardHandler(GameTime gameTime)
         {
             KeyboardState state = Keyboard.GetState();
 
@@ -325,7 +273,7 @@ namespace StarShooter
             {
                 if (state.IsKeyDown(Keys.Space))
                 {
-                    StartGame();
+                    StartGame(gameTime);
                     gameStarted = true;
                     gameOver = false;
                     spaceDown = true;
@@ -335,7 +283,7 @@ namespace StarShooter
 
             if (gameOver && state.IsKeyDown(Keys.Enter))
             {
-                StartGame();
+                StartGame(gameTime);
                 gameOver = false;
             }
 
@@ -349,9 +297,9 @@ namespace StarShooter
                     spaceDown = true;
                     paused = !paused;
                     if (paused)
-                        pauseStart = DateTime.Now;
+                        pauseStart = gameTime.TotalGameTime.TotalSeconds;
                     else
-                        pauseTime = DateTime.Now - pauseStart;
+                        pauseTime = gameTime.TotalGameTime.TotalSeconds - pauseStart;
                 }
             }
             else
@@ -387,8 +335,8 @@ namespace StarShooter
 
             ship.SetPosition(ship.X, ship.Y, directionX, directionY);
         }
-
-        public void StartGame()
+        double gameStart = 0;
+        public void StartGame(GameTime gameTime)
         {
             score = 0;
             ship.X = screenWidth / 2;
@@ -399,15 +347,18 @@ namespace StarShooter
 
             swarm.Projectiles.Clear();
             swarm.Ships.Clear();
+            swarm.Explosions.Clear();
+            
             ship.Projectiles.Clear();
-            gameStart = DateTime.Now;
+            ship.UpdateProjectiles(score);
+            gameStart = gameTime.TotalGameTime.TotalSeconds;
         }
 
         public void StartLevel()
         {
         }
 
-        public float ScaleToHighDPI(float f)
+        public static float ScaleToHighDPI(float f)
         {
             DisplayInformation d = DisplayInformation.GetForCurrentView();
             f *= (float)d.RawPixelsPerViewPixel;
