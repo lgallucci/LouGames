@@ -9,7 +9,7 @@ namespace StarShooter
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        readonly StarShooter _game;
+        readonly GameRoot _game;
 
         public MainPage()
         {
@@ -17,7 +17,7 @@ namespace StarShooter
 
             // Create the game.
             var launchArguments = string.Empty;
-            _game = MonoGame.Framework.XamlGame<StarShooter>.Create(launchArguments, Window.Current.CoreWindow, swapChainPanel);
+            _game = MonoGame.Framework.XamlGame<GameRoot>.Create(launchArguments, Window.Current.CoreWindow, swapChainPanel);
         }
     }
 }

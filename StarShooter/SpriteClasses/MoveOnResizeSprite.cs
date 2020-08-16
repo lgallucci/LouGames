@@ -13,8 +13,8 @@ namespace StarShooter
 
         public virtual void UpdateScale(float scaleX, float scaleY, float screenWidth, float screenHeight)
         {
-            this.X = screenWidth * PercentOfWidth;
-            this.Y = screenHeight * PercentOfHeight;
+            this.Position.X = screenWidth * PercentOfWidth;
+            this.Position.Y = screenHeight * PercentOfHeight;
             base.UpdateScale(scaleX, scaleY);
         }
 
@@ -23,10 +23,10 @@ namespace StarShooter
             throw new NotImplementedException();
         }
 
-        public void Update(GameTime gameTime, float screenWidth, float screenHeight)
+        public virtual void Update(GameTime gameTime, float screenWidth, float screenHeight)
         {
-            this.PercentOfHeight = Y / screenHeight;
-            this.PercentOfWidth = X / screenWidth;
+            this.PercentOfHeight = Position.Y / screenHeight;
+            this.PercentOfWidth = Position.X / screenWidth;
 
             base.Update(gameTime);
         }
