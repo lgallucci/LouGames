@@ -5,10 +5,10 @@ using System.Text;
 namespace Bejeweled
 {
 
-    struct GemPosition
+    class GemPosition
     {
-        internal int x;
-        internal int y;
+        public int X { get; set; }
+        public int Y { get; set; }
     }
 
     class Gem
@@ -30,16 +30,10 @@ namespace Bejeweled
             set { type = value; }
         }
 
-        internal int PositionX
+        internal GemPosition Position
         {
-            get { return pos.x; }
-            set { pos.x = value; }
-        }
-
-        internal int PositionY
-        {
-            get { return pos.y; }
-            set { pos.y = value; }
+            get { return pos; }
+            set { pos = value; }
         }
     }
 }

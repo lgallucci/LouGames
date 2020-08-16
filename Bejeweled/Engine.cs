@@ -161,7 +161,7 @@ namespace Bejeweled
         }
 
         #region Gem Movement Handler Methods
-        private void HandleSwap()
+        private void HandleSwap() 
         {
             isClickable = false;
             float swap_offset = -1f;
@@ -174,8 +174,8 @@ namespace Bejeweled
                 else
                     swap_offset = 1f;
 
-                board.data[swapHelper.x1, swapHelper.y1].PositionY -= (int)(swap_offset * offset);
-                board.data[swapHelper.x2, swapHelper.y2].PositionY += (int)(swap_offset * offset);
+                board.data[swapHelper.x1, swapHelper.y1].Position.Y -= (int)(swap_offset * offset);
+                board.data[swapHelper.x2, swapHelper.y2].Position.Y += (int)(swap_offset * offset);
 
             }
             else if (swapHelper.y1 == swapHelper.y2)
@@ -185,8 +185,8 @@ namespace Bejeweled
                 else
                     swap_offset = 1f;
 
-                board.data[swapHelper.x1, swapHelper.y1].PositionX -= (int)(swap_offset * offset);
-                board.data[swapHelper.x2, swapHelper.y2].PositionX += (int)(swap_offset * offset);
+                board.data[swapHelper.x1, swapHelper.y1].Position.X -= (int)(swap_offset * offset);
+                board.data[swapHelper.x2, swapHelper.y2].Position.X += (int)(swap_offset * offset);
             }
 
             if (move_counter >= 75)
@@ -196,10 +196,10 @@ namespace Bejeweled
                 if (!gameInfo.IsRunning && gameInfo.GameMode == 2)
                     gameInfo.IsRunning = true;
 
-                board.data[swapHelper.x1, swapHelper.y1].PositionX = (235 + (swapHelper.x1 * 75));
-                board.data[swapHelper.x2, swapHelper.y2].PositionX = (235 + (swapHelper.x2 * 75));
-                board.data[swapHelper.x1, swapHelper.y1].PositionY = (swapHelper.y1 * 75);
-                board.data[swapHelper.x2, swapHelper.y2].PositionY = (swapHelper.y2 * 75);
+                board.data[swapHelper.x1, swapHelper.y1].Position.X = (235 + (swapHelper.x1 * 75));
+                board.data[swapHelper.x2, swapHelper.y2].Position.X = (235 + (swapHelper.x2 * 75));
+                board.data[swapHelper.x1, swapHelper.y1].Position.Y = (swapHelper.y1 * 75);
+                board.data[swapHelper.x2, swapHelper.y2].Position.Y = (swapHelper.y2 * 75);
 
                 move_counter = 0;
 
@@ -243,9 +243,9 @@ namespace Bejeweled
                 for (int i = 0; i < 8; i++)
                     for (int j = 0; j < 8; j++)
                     {
-                        if (board.data[i, j].PositionY != j * 75)
+                        if (board.data[i, j].Position.Y != j * 75)
                         {
-                            board.data[i, j].PositionY = j * 75;
+                            board.data[i, j].Position.Y = j * 75;
                         }
                     }
 
@@ -258,11 +258,11 @@ namespace Bejeweled
                 for (int i = 0; i < 8; i++)
                     for (int j = 0; j < 8; j++)
                     {
-                        if (board.data[i, j].PositionY != j * 75)
+                        if (board.data[i, j].Position.Y != j * 75)
                         {
-                            board.data[i, j].PositionY += (int)(offset + (1.5 * gameInfo.CascadeCount));
-                            if (board.data[i, j].PositionY > j * 75)
-                                board.data[i, j].PositionY = j * 75;
+                            board.data[i, j].Position.Y += (int)(offset + (1.5 * gameInfo.CascadeCount));
+                            if (board.data[i, j].Position.Y > j * 75)
+                                board.data[i, j].Position.Y = j * 75;
                         }
                     }
             }
@@ -284,11 +284,11 @@ namespace Bejeweled
             for (int i = 0; i < 8; i++)
                 for (int j = 0; j < 8; j++)
                 {
-                    if (board.data[i, j].PositionY != (j * 75 + 600))
+                    if (board.data[i, j].Position.Y != (j * 75 + 600))
                     {
-                        board.data[i, j].PositionY += (int)(offset + (i * 1.1));
-                        if (board.data[i, j].PositionY > (j * 75 + 600))
-                            board.data[i, j].PositionY = (j * 75 + 600);
+                        board.data[i, j].Position.Y += (int)(offset + (i * 1.1));
+                        if (board.data[i, j].Position.Y > (j * 75 + 600))
+                            board.data[i, j].Position.Y = (j * 75 + 600);
                     }
                 }
         }
@@ -322,11 +322,11 @@ namespace Bejeweled
                 for (int i = 0; i < 8; i++)
                     for (int j = 0; j < 8; j++)
                     {
-                        if (board.data[i, j].PositionY != j * 75)
+                        if (board.data[i, j].Position.Y != j * 75)
                         {
-                            board.data[i, j].PositionY += (int)(offset + (i * 1.1));
-                            if (board.data[i, j].PositionY > j * 75)
-                                board.data[i, j].PositionY = j * 75;
+                            board.data[i, j].Position.Y += (int)(offset + (i * 1.1));
+                            if (board.data[i, j].Position.Y > j * 75)
+                                board.data[i, j].Position.Y = j * 75;
                         }
                     }
 

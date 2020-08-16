@@ -109,8 +109,8 @@ namespace Bejeweled
                             r_num = rand.Next(1, numOfGems);
 
                     data[i, j].Type = r_num;
-                    data[i, j].PositionX = 235 + (i * 75);
-                    data[i, j].PositionY = j * 75 - 600;
+                    data[i, j].Position.X = 235 + (i * 75);
+                    data[i, j].Position.Y = j * 75 - 600;
                     gemCount[r_num]++;
                 }
 
@@ -243,13 +243,13 @@ namespace Bejeweled
             int temp1 = data[x2, y2].Type;
 
             int[] temp2 = new int[2];
-            temp2[0] = data[x2, y2].PositionX;
-            temp2[1] = data[x2, y2].PositionY;
+            temp2[0] = data[x2, y2].Position.X;
+            temp2[1] = data[x2, y2].Position.Y;
             data[x2, y2].Type = data[x, y].Type;
-            data[x2, y2].PositionX = data[x, y].PositionX;
-            data[x2, y2].PositionY = data[x, y].PositionY;
-            data[x, y].PositionX = temp2[0];
-            data[x, y].PositionY = temp2[1];
+            data[x2, y2].Position.X = data[x, y].Position.X;
+            data[x2, y2].Position.Y = data[x, y].Position.Y;
+            data[x, y].Position.X = temp2[0];
+            data[x, y].Position.Y = temp2[1];
             data[x, y].Type = temp1;
         }
 
@@ -265,14 +265,14 @@ namespace Bejeweled
                                 int rnum = GetNextRandomGem(numOfGems); 
                                 data[x, y + 1].Type = rnum;
                                 data[x, y].Type = 0;
-                                data[x, y + 1].PositionY -= 75;
+                                data[x, y + 1].Position.Y -= 75;
                                 gemCount[rnum]++;
                             }
                             else
                             {
                                 data[x, y + 1].Type = data[x, y].Type;
                                 data[x, y].Type = 0;
-                                data[x, y + 1].PositionY = data[x, y].PositionY;
+                                data[x, y + 1].Position.Y = data[x, y].Position.Y;
                             }
                         }
 
@@ -283,7 +283,7 @@ namespace Bejeweled
                 {
                     int rnum = GetNextRandomGem(numOfGems); 
                     data[x, 0].Type = rnum;
-                    data[x, 0].PositionY = data[x, 1].PositionY - 75;
+                    data[x, 0].Position.Y = data[x, 1].Position.Y - 75;
                     gemCount[rnum]++;
                 }
 

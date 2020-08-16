@@ -222,7 +222,7 @@ namespace Bejeweled
 
             for (int i = 0; i < 8; i++)
                 for (int j = 0; j < 8; j++)
-                    DrawGem(board.data[i, j].Type, board.data[i, j].PositionX, board.data[i, j].PositionY);
+                    DrawGem(board.data[i, j].Type, board.data[i, j].Position.X, board.data[i, j].Position.Y);
 
             VideoScreen.Blit(newGame);
             VideoScreen.Blit(quitGame);
